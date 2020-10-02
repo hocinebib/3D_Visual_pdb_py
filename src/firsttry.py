@@ -1,3 +1,6 @@
+"""
+"""
+
 import mayavi
 from mayavi import mlab
 import numpy as np
@@ -10,23 +13,45 @@ VDW_RADIUS = {'H':1.20, 'C':1.7, 'N':1.55, 'O':1.52, 'CL':1.75, 'F':1.47, 'P':1.
 'I':1.98, 'XE':2.16, 'CS':3.43, 'BA':2.68, 'PT':1.75, 'AU':1.66, 'HG':1.55, 'TL':1.96,
 'PB':2.02, 'BI':2.07, 'PO':1.97, 'AT':2.02, 'RN':2.20, 'FR':3.48, 'RA':2.83, 'U':1.86}
 
-COL_ATM = {'H':(1,1,1), 'C':(0,0,0), 'N':(0,0.5,1), 'O':(1,0,0), 'S':(1,1,0), 'CL':(0.5,0.5,0), 
+COL_ATM = {'H':(0.9,0.9,0.9), 'C':(0.1,0.1,0.1), 'N':(0,0.5,0.9), 'O':(0.9,0,0), 'S':(0.9,0.9,0), 'CL':(0.5,0.5,0), 
 'BR':(0.6,0.1,0.1), 'I':(0.6,0,0.7)}
 
-R = VDW_RADIUS[row[1][0]]
-a = row[1][3]
-b = row[1][4]
-c = row[1][5]
 
-[phi,theta] = np.mgrid[0:2*np.pi:12j,0:np.pi:12j]
+def atom_spheres(atoms_df):
+    """
+    """
+    sph_lst=[]
+    for row in atoms_df.iterrows():
 
-x = R*np.cos(phi)*np.sin(theta) + a
-y = R*np.sin(phi)*np.sin(theta) + b
-z = R*np.cos(theta) + c
+        radius = VDW_RADIUS[row[1][0]]
 
-x1 = x + 1
-y1 = y + 1
-z1 = z + 1
+        if row[1][0] in COL_ATM :
+            col = COL_ATM[row[1][0]]
+        else :
+            col = (0.5,0.5,0.5)
 
-mlab.mesh(x, y, z, color = COL_ATM[row[1][0]])
-mlab.mesh(x1,y1,z1)
+        x_coor = row[1][3]
+        y_coor = row[1][4]
+        z_coor = row[1][5]
+
+        [phi,theta] = np.mgrid[0:2*np.pi:12j,0:np.pi:12j]
+
+        x = radius * np.cos(phi) * np.sin(theta) + x_coor
+        y = radius * np.sin(phi) * np.sin(theta) + y_coor
+        z = radius * np.cos(theta) + z_coor
+
+        sph_lst.append((x, y, z, col))
+
+    return sph_lst
+
+
+def visual_spacefilling(sph_lst):
+    """
+    """
+    for sph in sph_lst:
+        mlab.mesh(sph[0], sph[1], sph[2], color = sph[3])
+
+
+if __name__ == "__main__":
+    import firsttry
+    print(help(firsttry))

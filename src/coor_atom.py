@@ -7,8 +7,8 @@ def coord(pdb_file):
     """
     with open(pdb_file, "r") as pdb_f:
         lst = []
-        dic = {}
         for line in pdb_f :
+            dic = {}
             if line[0:4] == "ATOM":
                 dic["atom"] = str(line[77:79].strip())
                 dic["res"] = str(line[17:21].strip())
@@ -16,7 +16,7 @@ def coord(pdb_file):
                 dic["x"] = float(line[30:38].strip())
                 dic["y"] = float(line[38:46].strip())
                 dic["z"] = float(line[46:54].strip())
-                lst.append(dico)
+                lst.append(dic)
         atoms_df = pd.DataFrame(lst)
     return atoms_df
 
