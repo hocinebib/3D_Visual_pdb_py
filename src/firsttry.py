@@ -52,11 +52,29 @@ def visual_spacefilling(sph_lst):
         mlab.mesh(sph[0], sph[1], sph[2], color = sph[3]) #name = sph[4] , transparent = 0.5
 
 
+
+def xyz_ca_cb(atoms_df, res_name, i):
+    """
+    """
+    dic = {}
+    dic['x'] = []
+    dic['y'] = []
+    dic['z'] = []
+    
+    cc = 3
+    for c in ['x', 'y', 'z'] :
+        for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]==res_name)&(atoms_df["chain"]==atoms_df.iloc[i+1,7])][c]:
+            x = a
+        dic[c].append(x)
+        dic[c].append(atoms_df.iloc[i+1,cc])
+        cc += 1
+
+    return dic
+
+
 def visual_ballstick(atoms_df):
     """
     """
-    #mlab.plot3d(atoms_df['x'], atoms_df['y'], atoms_df['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
-    #mlab.points3d(atoms_df['x'], atoms_df['y'], atoms_df['z'], color = (0.1,0.1,0.1), scale_factor = 0.9, scale_mode = 'scalar')
     for row in atoms_df.iterrows():
         if row[1][0] in COL_ATM :
             col = COL_ATM[row[1][0]]
@@ -70,43 +88,46 @@ def visual_ballstick(atoms_df):
             if atoms_df.iloc[i+1,6] != "CB":
                 mlab.plot3d(atoms_df.iloc[i:i+2,3], atoms_df.iloc[i:i+2,4], atoms_df.iloc[i:i+2,5], color = (0.5,0.5,0.5), tube_radius = 0.2)
             else :
-                dict = {}
-                dict['x'] = []
-                for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
-                    x = a
-                dict['x'].append(x)
-                dict['x'].append(atoms_df.iloc[i+1,3])
-                dict['y'] = []
-                for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
-                    y = a
-                dict['y'].append(y)
-                dict['y'].append(atoms_df.iloc[i+1,4])
-                dict['z'] = []
-                for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
-                    z = a
-                dict['z'].append(z)
-                dict['z'].append(atoms_df.iloc[i+1,5])
-                mlab.plot3d(dict['x'], dict['y'], dict['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
+                #dict = {}
+                #dict['x'] = []
+                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
+                #    x = a
+                #dict['x'].append(x)
+                #dict['x'].append(atoms_df.iloc[i+1,3])
+                #dict['y'] = []
+                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
+                #    y = a
+                #dict['y'].append(y)
+                #dict['y'].append(atoms_df.iloc[i+1,4])
+                #dict['z'] = []
+                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
+                #    z = a
+                #dict['z'].append(z)
+                #dict['z'].append(atoms_df.iloc[i+1,5])
+                di = xyz_ca_cb(atoms_df, "CA", i)
+                mlab.plot3d(di['x'], di['y'], di['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
         elif atoms_df.iloc[i,7] != atoms_df.iloc[i+1,7]:
             i += 1 
         else :
-            dict = {}
-            dict['x'] = []
-            for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
-                x = a
-            dict['x'].append(x)
-            dict['x'].append(atoms_df.iloc[i+1,3])
-            dict['y'] = []
-            for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
-                y = a
-            dict['y'].append(y)
-            dict['y'].append(atoms_df.iloc[i+1,4])
-            dict['z'] = []
-            for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
-                z = a
-            dict['z'].append(z)
-            dict['z'].append(atoms_df.iloc[i+1,5])
-            mlab.plot3d(dict['x'], dict['y'], dict['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
+            #dict = {}
+            #dict['x'] = []
+            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
+            #    x = a
+            #dict['x'].append(x)
+            #dict['x'].append(atoms_df.iloc[i+1,3])
+            #dict['y'] = []
+            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
+            #    y = a
+            #dict['y'].append(y)
+            #dict['y'].append(atoms_df.iloc[i+1,4])
+            #dict['z'] = []
+            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
+            #    z = a
+            #dict['z'].append(z)
+            #dict['z'].append(atoms_df.iloc[i+1,5])
+            #mlab.plot3d(dict['x'], dict['y'], dict['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
+            di = xyz_ca_cb(atoms_df, "O", i)
+            mlab.plot3d(di['x'], di['y'], di['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
 
 
 if __name__ == "__main__":
