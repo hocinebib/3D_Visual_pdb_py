@@ -16,6 +16,8 @@ def coord(pdb_file):
                 dic["x"] = float(line[30:38].strip())
                 dic["y"] = float(line[38:46].strip())
                 dic["z"] = float(line[46:54].strip())
+                dic["ap"] = str(line[13:16].strip())
+                dic["chain"] = str(line[21:23].strip())
                 lst.append(dic)
         atoms_df = pd.DataFrame(lst)
     return atoms_df
