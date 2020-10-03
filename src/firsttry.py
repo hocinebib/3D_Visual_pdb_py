@@ -185,7 +185,7 @@ def visual_dist(dico_trsh, atoms_df):
 	for key in dico_trsh:
 		for i in dico_trsh[key]:
 			if i :
-				mlab.plot3d(atoms_df.iloc[[key,i],3], atoms_df.iloc[[key,i],4], atoms_df.iloc[[key,i],5], color = (1,1,0), tube_radius = 0.1)
+				mlab.plot3d(atoms_df.iloc[[key,i],3], atoms_df.iloc[[key,i],4], atoms_df.iloc[[key,i],5], color = (1,1,0), tube_radius = 0.05, opacity = 0.5)#, representation = 'wireframe')
 
 
 if __name__ == "__main__":
