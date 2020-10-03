@@ -4,6 +4,8 @@
 import mayavi
 from mayavi import mlab
 import numpy as np
+import pandas as pd
+from scipy.spatial import distance_matrix
 
 VDW_RADIUS = {'H':1.20, 'C':1.7, 'N':1.55, 'O':1.52, 'CL':1.75, 'F':1.47, 'P':1.80,
 'S':1.80, 'CU':1.40, 'HE':1.40, 'LI':1.82, 'BE':1.53, 'B':1.92, 'NE':1.54, 'NA':2.27,
@@ -123,15 +125,15 @@ def visual_lines(atoms_df):
 
 
 def visual_ribbon(atoms_df):
-	"""
-	"""
-	df = atoms_df[atoms_df['ap'] == 'CA']
-	col = 0.2
-	for i in range(len(df.chain.unique())):
-		c = df.chain.unique()[i]
-		mlab.plot3d(df[df["chain"]==c]["x"], df[df["chain"]==c]['y'], df[df["chain"]==c]['z'], color = (col,col+0.2,col+0.3), tube_radius = 0.1)
-		col += 0.3
-	#mlab.plot3d(df['x'], df['y'], df['z'], color = (0,0.6,0.8), tube_radius = 0.1)
+    """
+    """
+    df = atoms_df[atoms_df['ap'] == 'CA']
+    col = 0.2
+    for i in range(len(df.chain.unique())):
+        c = df.chain.unique()[i]
+        mlab.plot3d(df[df["chain"]==c]["x"], df[df["chain"]==c]['y'], df[df["chain"]==c]['z'], color = (col,col+0.2,col+0.3), tube_radius = 0.2)
+        col += 0.3
+    #mlab.plot3d(df['x'], df['y'], df['z'], color = (0,0.6,0.8), tube_radius = 0.1)
 
 
 #https://docs.enthought.com/mayavi/mayavi/auto/example_pick_on_surface.html
@@ -147,6 +149,44 @@ def picker_callback(picker):
 
 #fig = mlab.figure(1)
 #fig.on_mouse_pick(picker_callback)
+
+
+def atom_dist_matrix(atoms_df):
+    """
+    """
+    return pd.DataFrame(distance_matrix(atoms_df.iloc[:,3:6],atoms_df.iloc[:,3:6]), index=atoms_df.iloc[:,3:6].index, columns=atoms_df.iloc[:,3:6].index)
+
+
+def threshold_dict(mtx, atoms_df):
+    """
+    """
+    r = []
+    i = []
+    TRS_MAX = 4 # 4A
+
+    for index, row in mtx.iterrows():
+        r.append(row)
+        i.append(index)
+
+    dico_trsh = {}
+    for a in range(len(i)):
+        lst = []
+        for b in range(len(r[a])-1):
+            if (r[a][b] < TRS_MAX) & (atoms_df.iloc[a,2] != atoms_df.iloc[b,2]) & (atoms_df.iloc[a,6] != "CA") & (atoms_df.iloc[b,6] != "CA"):
+                lst.append(b)
+        dico_trsh[a] = lst
+
+    return dico_trsh
+
+
+def visual_dist(dico_trsh, atoms_df):
+	"""
+	"""
+	for key in dico_trsh:
+		for i in dico_trsh[key]:
+			if i :
+				mlab.plot3d(atoms_df.iloc[[key,i],3], atoms_df.iloc[[key,i],4], atoms_df.iloc[[key,i],5], color = (1,1,0), tube_radius = 0.1)
+
 
 if __name__ == "__main__":
     import firsttry
