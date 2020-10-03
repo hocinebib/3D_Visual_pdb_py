@@ -103,7 +103,7 @@ def res_names(atoms_df):
     """
     """
     for row in atoms_df.iterrows():
-        mlab.text3d(row[1][3], row[1][4], row[1][5], text = row[1][1] + " " + str(row[1][2]))
+        mlab.text3d(row[1][3], row[1][4], row[1][5], text = row[1][0] + " " + str(row[1][2]), color = (0,0,0))
 
 
 
