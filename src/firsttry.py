@@ -98,10 +98,40 @@ def visual_ballstick(atoms_df):
 
 
 def res_names(atoms_df):
+    """
+    """
+    for row in atoms_df.iterrows():
+        mlab.text3d(row[1][3], row[1][4], row[1][5], text = row[1][1] + " " + str(row[1][2]))
+
+
+
+def visual_lines(atoms_df):
+    """
+    """
+    for i in range(len(atoms_df)-2):
+        if atoms_df.iloc[i,2] == atoms_df.iloc[i+1,2]:
+            if atoms_df.iloc[i+1,6] != "CB":
+                mlab.plot3d(atoms_df.iloc[i:i+2,3], atoms_df.iloc[i:i+2,4], atoms_df.iloc[i:i+2,5], color = (0,1,0), tube_radius = 0.2)
+            else :
+                di = xyz_ca_cb(atoms_df, "CA", i)
+                mlab.plot3d(di['x'], di['y'], di['z'], color = (0,1,0), tube_radius = 0.2)
+        elif atoms_df.iloc[i,7] != atoms_df.iloc[i+1,7]:
+            i += 1 
+        else :
+            di = xyz_ca_cb(atoms_df, "O", i)
+            mlab.plot3d(di['x'], di['y'], di['z'], color = (0,1,0), tube_radius = 0.2)
+
+
+def visual_ribbon(atoms_df):
 	"""
 	"""
-	for row in atoms_df.iterrows():
-		mlab.text3d(row[1][3], row[1][4], row[1][5], text = row[1][1] + " " + str(row[1][2]))
+	df = atoms_df[atoms_df['ap'] == 'CA']
+	col = 0.2
+	for i in range(len(df.chain.unique())):
+		c = df.chain.unique()[i]
+		mlab.plot3d(df[df["chain"]==c]["x"], df[df["chain"]==c]['y'], df[df["chain"]==c]['z'], color = (col,col+0.2,col+0.3), tube_radius = 0.1)
+		col += 0.3
+	#mlab.plot3d(df['x'], df['y'], df['z'], color = (0,0.6,0.8), tube_radius = 0.1)
 
 
 #https://docs.enthought.com/mayavi/mayavi/auto/example_pick_on_surface.html

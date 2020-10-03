@@ -9,6 +9,11 @@
 ### Space filling representation :
 ![Screenshot](spacefilling.png)
 
+### Ribbon representation :
+![Screenshot](ribbon.png)
+
+### Lines representation :
+![Screenshot](linesnames.png)
 
 ---
 
