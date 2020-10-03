@@ -13,8 +13,8 @@ VDW_RADIUS = {'H':1.20, 'C':1.7, 'N':1.55, 'O':1.52, 'CL':1.75, 'F':1.47, 'P':1.
 'I':1.98, 'XE':2.16, 'CS':3.43, 'BA':2.68, 'PT':1.75, 'AU':1.66, 'HG':1.55, 'TL':1.96,
 'PB':2.02, 'BI':2.07, 'PO':1.97, 'AT':2.02, 'RN':2.20, 'FR':3.48, 'RA':2.83, 'U':1.86}
 
-COL_ATM = {'H':(0.9,0.9,0.9), 'C':(0.1,0.1,0.1), 'N':(0,0.5,0.9), 'O':(0.9,0,0), 'S':(0.9,0.9,0), 'CL':(0.5,0.5,0), 
-'BR':(0.6,0.1,0.1), 'I':(0.6,0,0.7)}
+COL_ATM = {'H':(0.9,0.9,0.9), 'C':(0.1,0.1,0.1), 'N':(0,0.5,0.9), 'O':(0.9,0,0), 'S':(0.9,0.9,0), 
+'CL':(0.5,0.5,0), 'BR':(0.6,0.1,0.1), 'I':(0.6,0,0.7)}
 
 
 def atom_spheres(atoms_df):
@@ -40,7 +40,7 @@ def atom_spheres(atoms_df):
         y = radius * np.sin(phi) * np.sin(theta) + y_coor
         z = radius * np.cos(theta) + z_coor
 
-        sph_lst.append((x, y, z, col)) #, row[1][0] + row[1][1]
+        sph_lst.append((x, y, z, col, row[1][0] + row[1][1])) #, row[1][0] + row[1][1]
 
     return sph_lst
 
@@ -49,7 +49,7 @@ def visual_spacefilling(sph_lst):
     """
     """
     for sph in sph_lst:
-        mlab.mesh(sph[0], sph[1], sph[2], color = sph[3]) #name = sph[4] , transparent = 0.5
+        mlab.mesh(sph[0], sph[1], sph[2], color = sph[3], name = sph[4])
 
 
 
@@ -88,47 +88,35 @@ def visual_ballstick(atoms_df):
             if atoms_df.iloc[i+1,6] != "CB":
                 mlab.plot3d(atoms_df.iloc[i:i+2,3], atoms_df.iloc[i:i+2,4], atoms_df.iloc[i:i+2,5], color = (0.5,0.5,0.5), tube_radius = 0.2)
             else :
-                #dict = {}
-                #dict['x'] = []
-                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
-                #    x = a
-                #dict['x'].append(x)
-                #dict['x'].append(atoms_df.iloc[i+1,3])
-                #dict['y'] = []
-                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
-                #    y = a
-                #dict['y'].append(y)
-                #dict['y'].append(atoms_df.iloc[i+1,4])
-                #dict['z'] = []
-                #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i+1,2])&(atoms_df["ap"]=="CA")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
-                #    z = a
-                #dict['z'].append(z)
-                #dict['z'].append(atoms_df.iloc[i+1,5])
                 di = xyz_ca_cb(atoms_df, "CA", i)
                 mlab.plot3d(di['x'], di['y'], di['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
         elif atoms_df.iloc[i,7] != atoms_df.iloc[i+1,7]:
             i += 1 
         else :
-            #dict = {}
-            #dict['x'] = []
-            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["x"]:
-            #    x = a
-            #dict['x'].append(x)
-            #dict['x'].append(atoms_df.iloc[i+1,3])
-            #dict['y'] = []
-            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["y"]:
-            #    y = a
-            #dict['y'].append(y)
-            #dict['y'].append(atoms_df.iloc[i+1,4])
-            #dict['z'] = []
-            #for a in atoms_df[(atoms_df["res nbr"]==atoms_df.iloc[i,2])&(atoms_df["ap"]=="O")&(atoms_df["chain"]==atoms_df.iloc[i+1,7])]["z"]:
-            #    z = a
-            #dict['z'].append(z)
-            #dict['z'].append(atoms_df.iloc[i+1,5])
-            #mlab.plot3d(dict['x'], dict['y'], dict['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
             di = xyz_ca_cb(atoms_df, "O", i)
             mlab.plot3d(di['x'], di['y'], di['z'], color = (0.5,0.5,0.5), tube_radius = 0.2)
 
+
+def res_names(atoms_df):
+	"""
+	"""
+	for row in atoms_df.iterrows():
+		mlab.text3d(row[1][3], row[1][4], row[1][5], text = row[1][1] + " " + str(row[1][2]))
+
+
+#https://docs.enthought.com/mayavi/mayavi/auto/example_pick_on_surface.html
+def picker_callback(picker):
+    """ Picker callback: this get called when on pick events.
+    """
+    #print(picker.picked_positions)
+    print("*********************")
+    print("mapper : ", picker.mapper_position)
+    print("coord  : ", df.iloc[picker.point_id,3], df.iloc[picker.point_id,4], df.iloc[picker.point_id,5])
+    #print(picker.point_id, atoms_df.iloc[picker.point_id,0])
+    #print(picker.MapperPosition, atoms_df.iloc[picker_id,3], atoms_df.iloc[picker_id,4], atoms_df.iloc[picker_id,5])
+
+#fig = mlab.figure(1)
+#fig.on_mouse_pick(picker_callback)
 
 if __name__ == "__main__":
     import firsttry
