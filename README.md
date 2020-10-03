@@ -4,16 +4,19 @@
 ---
 
 ### Ball and stick representation :
-![Screenshot](ballsticks.png)
+![Screenshot](img/ballsticks.png)
 
 ### Space filling representation :
-![Screenshot](spacefilling.png)
+![Screenshot](img/spacefilling.png)
 
 ### Ribbon representation :
-![Screenshot](ribbon.png)
+![Screenshot](img/ribbon.png)
 
 ### Lines representation :
-![Screenshot](linesnames.png)
+![Screenshot](img/linesnames.png)
+
+### Distance representation (less than 4A) :
+![Screenshot](img/distance.png)
 
 ---
 
